@@ -18,11 +18,43 @@ if (menuButton && navLinks) {
   });
 }
 
+// 페이지 스크롤을 방해하지 않도록, 사용자가 선택한 뒤에만 지도를 조작합니다.
+const interactiveMaps = document.querySelectorAll('[data-interactive-map]');
+interactiveMaps.forEach((mapCard) => {
+  const activateButton = mapCard.querySelector('.map-activate');
+  const mapFrame = mapCard.querySelector('iframe');
+  if (!activateButton || !mapFrame) return;
+
+  const deactivateMap = () => mapCard.classList.remove('is-active');
+
+  activateButton.addEventListener('click', () => {
+    mapCard.classList.add('is-active');
+    mapFrame.focus();
+  });
+
+  mapCard.addEventListener('mouseleave', deactivateMap);
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') deactivateMap();
+  });
+  document.addEventListener('pointerdown', (event) => {
+    if (!mapCard.contains(event.target)) deactivateMap();
+  });
+});
+
 const revealElements = document.querySelectorAll('[data-reveal]');
 if ('IntersectionObserver' in window) {
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      entry.target.classList.toggle('revealed', entry.isIntersecting);
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        return;
+      }
+
+      // 위쪽으로 퇴장할 때 transform을 되돌리면 관찰 경계를 반복해서
+      // 넘나들 수 있으므로, 화면 아래쪽에 있을 때만 다음 등장을 준비합니다.
+      if (entry.boundingClientRect.top >= window.innerHeight) {
+        entry.target.classList.remove('revealed');
+      }
     });
   }, { threshold: 0.14 });
   revealElements.forEach((element) => revealObserver.observe(element));
@@ -110,7 +142,14 @@ textRevealTargets.forEach((element) => {
 if ('IntersectionObserver' in window) {
   const textObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      entry.target.classList.toggle('text-visible', entry.isIntersecting);
+      if (entry.isIntersecting) {
+        entry.target.classList.add('text-visible');
+        return;
+      }
+
+      if (entry.boundingClientRect.top >= window.innerHeight) {
+        entry.target.classList.remove('text-visible');
+      }
     });
   }, { threshold: 0.35 });
   textRevealTargets.forEach((element) => textObserver.observe(element));
