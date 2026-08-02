@@ -1,5 +1,6 @@
 const menuButton = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('.nav-links');
+const siteHeader = document.querySelector('.site-header');
 
 if (menuButton && navLinks) {
   menuButton.addEventListener('click', () => {
@@ -146,6 +147,7 @@ const updateScrollMotion = () => {
   const scrollRange = document.documentElement.scrollHeight - window.innerHeight;
   const progress = scrollRange > 0 ? window.scrollY / scrollRange : 0;
   progressBar.style.transform = `scaleX(${Math.min(1, Math.max(0, progress))})`;
+  siteHeader?.classList.toggle('scrolled', window.scrollY > 32);
 
   parallaxElements.forEach((element) => {
     const rect = element.getBoundingClientRect();
