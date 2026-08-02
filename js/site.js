@@ -20,11 +20,9 @@ if (menuButton && navLinks) {
 
 const revealElements = document.querySelectorAll('[data-reveal]');
 if ('IntersectionObserver' in window) {
-  const revealObserver = new IntersectionObserver((entries, observer) => {
+  const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add('revealed');
-      observer.unobserve(entry.target);
+      entry.target.classList.toggle('revealed', entry.isIntersecting);
     });
   }, { threshold: 0.14 });
   revealElements.forEach((element) => revealObserver.observe(element));
@@ -110,11 +108,9 @@ textRevealTargets.forEach((element) => {
 });
 
 if ('IntersectionObserver' in window) {
-  const textObserver = new IntersectionObserver((entries, observer) => {
+  const textObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add('text-visible');
-      observer.unobserve(entry.target);
+      entry.target.classList.toggle('text-visible', entry.isIntersecting);
     });
   }, { threshold: 0.35 });
   textRevealTargets.forEach((element) => textObserver.observe(element));
