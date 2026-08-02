@@ -22,7 +22,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 170px; }
 body {
   margin: 0;
   color: #eef5ff;
-  background: #020914;
+  background: linear-gradient(135deg, #07182f 0%, #020914 56%, #000 100%);
   font-family: "Noto Sans KR", sans-serif;
   line-height: 1.7;
   word-break: keep-all;
@@ -33,8 +33,8 @@ img { display: block; max-width: 100%; }
 button { font: inherit; }
 .container { width: var(--container); margin-inline: auto; }
 .section { padding: 132px 0; }
-.section--soft { background: #061225; }
-.section--dark { color: var(--white); background: #010713; }
+.section--soft { background: linear-gradient(135deg, #081a33 0%, #03101f 58%, #000 100%); }
+.section--dark { color: var(--white); background: linear-gradient(135deg, #061326 0%, #01070f 62%, #000 100%); }
 .section-head { max-width: 720px; margin-bottom: 48px; }
 .section-head--center { margin-inline: auto; text-align: center; }
 .eyebrow {
@@ -447,7 +447,7 @@ button { font: inherit; }
   position: relative;
   overflow: hidden;
   padding: 108px 0 96px;
-  background: radial-gradient(circle at 78% 22%, rgba(17,88,148,.1), transparent 31%), linear-gradient(135deg, #020a17 0%, #041225 58%, #020b19 100%);
+  background: radial-gradient(circle at 78% 22%, rgba(17,88,148,.1), transparent 31%), linear-gradient(135deg, #07182f 0%, #020914 58%, #000 100%);
 }
 .business-section::before { position: absolute; inset: 0; content: ""; opacity: .18; pointer-events: none; background-image: linear-gradient(rgba(88,220,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(88,220,255,.02) 1px, transparent 1px); background-size: 80px 80px; mask-image: linear-gradient(to bottom, #000, transparent 74%); }
 .business-container { position: relative; z-index: 1; width: min(1180px, calc(100% - 40px)); }
