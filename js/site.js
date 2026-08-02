@@ -18,29 +18,6 @@ if (menuButton && navLinks) {
   });
 }
 
-// 페이지 스크롤을 방해하지 않도록, 사용자가 선택한 뒤에만 지도를 조작합니다.
-const interactiveMaps = document.querySelectorAll('[data-interactive-map]');
-interactiveMaps.forEach((mapCard) => {
-  const activateButton = mapCard.querySelector('.map-activate');
-  const mapFrame = mapCard.querySelector('iframe');
-  if (!activateButton || !mapFrame) return;
-
-  const deactivateMap = () => mapCard.classList.remove('is-active');
-
-  activateButton.addEventListener('click', () => {
-    mapCard.classList.add('is-active');
-    mapFrame.focus();
-  });
-
-  mapCard.addEventListener('mouseleave', deactivateMap);
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') deactivateMap();
-  });
-  document.addEventListener('pointerdown', (event) => {
-    if (!mapCard.contains(event.target)) deactivateMap();
-  });
-});
-
 const revealElements = document.querySelectorAll('[data-reveal]');
 if ('IntersectionObserver' in window) {
   const revealObserver = new IntersectionObserver((entries) => {
