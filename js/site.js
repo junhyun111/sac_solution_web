@@ -89,7 +89,7 @@ if (year) year.textContent = new Date().getFullYear();
 
 // 문장이 화면에 들어오면 단어가 순서대로 부드럽게 나타납니다.
 const textRevealTargets = document.querySelectorAll(
-  '.section-title, .solution-copy h2, .company-intro h2, .tech-copy h2, .sub-hero h1, .cta h2'
+  '.sub-hero h1'
 );
 
 textRevealTargets.forEach((element) => {
