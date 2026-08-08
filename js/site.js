@@ -40,10 +40,10 @@ if ('IntersectionObserver' in window) {
   revealElements.forEach((element) => element.classList.add('revealed'));
 }
 
-const sectionLinks = document.querySelectorAll('.anchor-inner a[href^="#"]');
-const linkedSections = [...sectionLinks]
+const sectionLinks = document.querySelectorAll('.anchor-inner a[href^="#"], .solution-rail a[href^="#"]');
+const linkedSections = [...new Set([...sectionLinks]
   .map((link) => document.querySelector(link.getAttribute('href')))
-  .filter(Boolean);
+  .filter(Boolean))];
 
 const centerAnchorLink = (link) => {
   const slider = link?.closest('.anchor-inner');
@@ -142,12 +142,21 @@ progressBar.setAttribute('aria-hidden', 'true');
 document.body.appendChild(progressBar);
 
 const parallaxElements = document.querySelectorAll('[data-parallax]');
+const solutionRail = document.querySelector('.solution-rail');
 let scrollTicking = false;
 const updateScrollMotion = () => {
   const scrollRange = document.documentElement.scrollHeight - window.innerHeight;
   const progress = scrollRange > 0 ? window.scrollY / scrollRange : 0;
   progressBar.style.transform = `scaleX(${Math.min(1, Math.max(0, progress))})`;
   siteHeader?.classList.toggle('scrolled', window.scrollY > 32);
+
+  if (solutionRail && linkedSections.length) {
+    const firstSection = linkedSections[0];
+    const lastSection = linkedSections[linkedSections.length - 1];
+    const railStart = firstSection.offsetTop - window.innerHeight * .42;
+    const railEnd = lastSection.offsetTop + lastSection.offsetHeight - window.innerHeight * .55;
+    solutionRail.classList.toggle('visible', window.scrollY >= railStart && window.scrollY <= railEnd);
+  }
 
   parallaxElements.forEach((element) => {
     const rect = element.getBoundingClientRect();
