@@ -2,39 +2,46 @@ const menuButton = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('.nav-links');
 const siteHeader = document.querySelector('.site-header');
 
+const closeMenu = () => {
+  if (!menuButton || !navLinks) return;
+  menuButton.setAttribute('aria-expanded', 'false');
+  menuButton.setAttribute('aria-label', '메뉴 열기');
+  navLinks.classList.remove('open');
+  document.body.classList.remove('menu-open');
+  siteHeader?.classList.remove('header-hidden');
+};
+
 if (menuButton && navLinks) {
   menuButton.addEventListener('click', () => {
-    const isOpen = menuButton.getAttribute('aria-expanded') === 'true';
-    menuButton.setAttribute('aria-expanded', String(!isOpen));
-    navLinks.classList.toggle('open', !isOpen);
-    document.body.classList.toggle('menu-open', !isOpen);
+    const willOpen = menuButton.getAttribute('aria-expanded') !== 'true';
+    menuButton.setAttribute('aria-expanded', String(willOpen));
+    menuButton.setAttribute('aria-label', willOpen ? '메뉴 닫기' : '메뉴 열기');
+    navLinks.classList.toggle('open', willOpen);
+    document.body.classList.toggle('menu-open', willOpen);
+    if (willOpen) siteHeader?.classList.remove('header-hidden');
   });
 
-  navLinks.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', () => {
-      menuButton.setAttribute('aria-expanded', 'false');
-      navLinks.classList.remove('open');
-      document.body.classList.remove('menu-open');
-    });
+  navLinks.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeMenu();
+  });
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) closeMenu();
   });
 }
 
 const revealElements = document.querySelectorAll('[data-reveal]');
-if ('IntersectionObserver' in window) {
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if ('IntersectionObserver' in window && !reducedMotion) {
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('revealed');
-        return;
-      }
-
-      // 위쪽으로 퇴장할 때 transform을 되돌리면 관찰 경계를 반복해서
-      // 넘나들 수 있으므로, 화면 아래쪽에 있을 때만 다음 등장을 준비합니다.
-      if (entry.boundingClientRect.top >= window.innerHeight) {
-        entry.target.classList.remove('revealed');
-      }
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('revealed');
+      revealObserver.unobserve(entry.target);
     });
-  }, { threshold: 0.14 });
+  }, { threshold: 0.12 });
+
   revealElements.forEach((element) => revealObserver.observe(element));
 } else {
   revealElements.forEach((element) => element.classList.add('revealed'));
@@ -49,14 +56,18 @@ const centerAnchorLink = (link) => {
   const slider = link?.closest('.anchor-inner');
   if (!slider) return;
   const left = link.offsetLeft - (slider.clientWidth - link.offsetWidth) / 2;
-  slider.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+  slider.scrollTo({ left: Math.max(0, left), behavior: reducedMotion ? 'auto' : 'smooth' });
+};
+
+const getNavigationOffset = () => {
+  const headerHeight = siteHeader?.offsetHeight || 0;
+  const anchorHeight = document.querySelector('.anchor-nav')?.offsetHeight || 0;
+  return headerHeight + anchorHeight + 12;
 };
 
 const updateActiveSection = () => {
   if (!linkedSections.length) return;
-  const headerHeight = document.querySelector('.site-header')?.offsetHeight || 0;
-  const anchorHeight = document.querySelector('.anchor-nav')?.offsetHeight || 0;
-  const marker = window.scrollY + headerHeight + anchorHeight + 36;
+  const marker = window.scrollY + getNavigationOffset() + 24;
   let current = linkedSections[0];
 
   linkedSections.forEach((section) => {
@@ -67,6 +78,8 @@ const updateActiveSection = () => {
     const isActive = link.getAttribute('href') === `#${current.id}`;
     const wasActive = link.classList.contains('active');
     link.classList.toggle('active', isActive);
+    if (isActive) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
     if (isActive && !wasActive) centerAnchorLink(link);
   });
 };
@@ -76,184 +89,113 @@ sectionLinks.forEach((link) => {
     const target = document.querySelector(link.getAttribute('href'));
     if (!target) return;
     event.preventDefault();
-    const headerHeight = document.querySelector('.site-header')?.offsetHeight || 0;
-    const anchorHeight = document.querySelector('.anchor-nav')?.offsetHeight || 0;
-    const top = target.getBoundingClientRect().top + window.scrollY - headerHeight - anchorHeight - 12;
-    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    const top = target.getBoundingClientRect().top + window.scrollY - getNavigationOffset();
+    window.scrollTo({ top: Math.max(0, top), behavior: reducedMotion ? 'auto' : 'smooth' });
+    history.replaceState(null, '', link.getAttribute('href'));
     centerAnchorLink(link);
   });
 });
 
-const year = document.querySelector('[data-year]');
-if (year) year.textContent = new Date().getFullYear();
-
-// 문장이 화면에 들어오면 단어가 순서대로 부드럽게 나타납니다.
-const textRevealTargets = document.querySelectorAll(
-  '.sub-hero h1'
-);
-
-textRevealTargets.forEach((element) => {
-  let wordIndex = 0;
-  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
-  const textNodes = [];
-  while (walker.nextNode()) textNodes.push(walker.currentNode);
-
-  textNodes.forEach((node) => {
-    if (!node.nodeValue.trim()) return;
-    const fragment = document.createDocumentFragment();
-    node.nodeValue.split(/(\s+)/).forEach((part) => {
-      if (!part.trim()) {
-        fragment.appendChild(document.createTextNode(part));
-        return;
-      }
-      const word = document.createElement('span');
-      word.className = 'word';
-      word.style.setProperty('--word-index', wordIndex++);
-      word.textContent = part;
-      fragment.appendChild(word);
-    });
-    node.parentNode.replaceChild(fragment, node);
-  });
-  element.classList.add('word-reveal');
-});
-
-if ('IntersectionObserver' in window) {
-  const textObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('text-visible');
-        return;
-      }
-
-      if (entry.boundingClientRect.top >= window.innerHeight) {
-        entry.target.classList.remove('text-visible');
-      }
-    });
-  }, { threshold: 0.35 });
-  textRevealTargets.forEach((element) => textObserver.observe(element));
-} else {
-  textRevealTargets.forEach((element) => element.classList.add('text-visible'));
-}
-
-// 페이지 진행률과 이미지의 아주 미세한 패럴랙스 움직임을 함께 갱신합니다.
-const progressBar = document.createElement('div');
-progressBar.className = 'scroll-progress';
-progressBar.setAttribute('aria-hidden', 'true');
-document.body.appendChild(progressBar);
-
-const parallaxElements = document.querySelectorAll('[data-parallax]');
 const solutionRail = document.querySelector('.solution-rail');
 let scrollTicking = false;
-const updateScrollMotion = () => {
-  const scrollRange = document.documentElement.scrollHeight - window.innerHeight;
-  const progress = scrollRange > 0 ? window.scrollY / scrollRange : 0;
-  progressBar.style.transform = `scaleX(${Math.min(1, Math.max(0, progress))})`;
-  siteHeader?.classList.toggle('scrolled', window.scrollY > 32);
+let lastScrollY = window.scrollY;
+
+const updateScrollState = () => {
+  const currentScrollY = window.scrollY;
+  siteHeader?.classList.toggle('scrolled', currentScrollY > 24);
+
+  if (siteHeader) {
+    const menuIsOpen = document.body.classList.contains('menu-open');
+    const movedDown = currentScrollY > lastScrollY + 8;
+    const movedUp = currentScrollY < lastScrollY - 8;
+    const nearTop = currentScrollY < siteHeader.offsetHeight;
+
+    if (menuIsOpen || nearTop || movedUp) siteHeader.classList.remove('header-hidden');
+    else if (movedDown) siteHeader.classList.add('header-hidden');
+  }
 
   if (solutionRail && linkedSections.length) {
     const firstSection = linkedSections[0];
     const lastSection = linkedSections[linkedSections.length - 1];
-    const railStart = firstSection.offsetTop - window.innerHeight * .42;
+    const railStart = firstSection.offsetTop - window.innerHeight * .45;
     const railEnd = lastSection.offsetTop + lastSection.offsetHeight - window.innerHeight * .55;
     solutionRail.classList.toggle('visible', window.scrollY >= railStart && window.scrollY <= railEnd);
   }
 
-  parallaxElements.forEach((element) => {
-    const rect = element.getBoundingClientRect();
-    const offset = (rect.top + rect.height / 2 - window.innerHeight / 2) * -0.035;
-    element.style.setProperty('--parallax-y', `${Math.max(-18, Math.min(18, offset))}px`);
-  });
   updateActiveSection();
+  lastScrollY = currentScrollY;
   scrollTicking = false;
 };
 
 window.addEventListener('scroll', () => {
   if (scrollTicking) return;
   scrollTicking = true;
-  window.requestAnimationFrame(updateScrollMotion);
+  window.requestAnimationFrame(updateScrollState);
 }, { passive: true });
-updateScrollMotion();
+window.addEventListener('resize', updateScrollState);
+updateScrollState();
 
-// 메인 비주얼: 데이터 흐름을 연상시키는 가벼운 네트워크 애니메이션입니다.
-const canvas = document.querySelector('#network-canvas');
-if (canvas) {
-  const context = canvas.getContext('2d');
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let width = 0;
-  let height = 0;
-  let particles = [];
-  let animationFrame;
-  const pointer = { x: -1000, y: -1000 };
+document.querySelectorAll('[data-year]').forEach((element) => {
+  element.textContent = new Date().getFullYear();
+});
 
-  const makeParticles = () => {
-    const count = width < 700 ? 22 : 42;
-    particles = Array.from({ length: count }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - .5) * .18,
-      vy: (Math.random() - .5) * .18,
-      radius: Math.random() * 1.4 + .6
-    }));
-  };
-
-  const resizeCanvas = () => {
-    const ratio = Math.min(window.devicePixelRatio || 1, 2);
-    const rect = canvas.getBoundingClientRect();
-    width = rect.width;
-    height = rect.height;
-    canvas.width = Math.round(width * ratio);
-    canvas.height = Math.round(height * ratio);
-    context.setTransform(ratio, 0, 0, ratio, 0, 0);
-    makeParticles();
-  };
-
-  const drawNetwork = () => {
-    context.clearRect(0, 0, width, height);
-    particles.forEach((particle, index) => {
-      if (!reducedMotion) {
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-        if (particle.x < 0 || particle.x > width) particle.vx *= -1;
-        if (particle.y < 0 || particle.y > height) particle.vy *= -1;
-      }
-
-      const pointerDistance = Math.hypot(particle.x - pointer.x, particle.y - pointer.y);
-      const glow = pointerDistance < 170 ? .85 : .48;
-      context.beginPath();
-      context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-      context.fillStyle = `rgba(117, 224, 255, ${glow})`;
-      context.fill();
-
-      for (let next = index + 1; next < particles.length; next += 1) {
-        const target = particles[next];
-        const distance = Math.hypot(particle.x - target.x, particle.y - target.y);
-        if (distance > 145) continue;
-        context.beginPath();
-        context.moveTo(particle.x, particle.y);
-        context.lineTo(target.x, target.y);
-        context.strokeStyle = `rgba(87, 204, 255, ${(1 - distance / 145) * .2})`;
-        context.lineWidth = .7;
-        context.stroke();
-      }
+const solutionFilterButtons = document.querySelectorAll('[data-solution-filter]');
+const solutionCards = document.querySelectorAll('[data-solution-category]');
+if (solutionFilterButtons.length && solutionCards.length) {
+  solutionFilterButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const filter = button.dataset.solutionFilter;
+      solutionFilterButtons.forEach((item) => {
+        item.setAttribute('aria-pressed', String(item === button));
+      });
+      solutionCards.forEach((card) => {
+        card.hidden = filter !== 'all' && card.dataset.solutionCategory !== filter;
+      });
     });
+  });
+}
 
-    if (!reducedMotion) animationFrame = window.requestAnimationFrame(drawNetwork);
+const contactForm = document.querySelector('[data-contact-form]');
+if (contactForm) {
+  const solutionSelect = contactForm.elements.solution;
+  const solutionMap = {
+    safety: '재난·안전 솔루션',
+    broadcast: '방송·문화 설비',
+    integration: '시스템 통합',
+    smart: '스마트 통신·ICT'
   };
+  const requestedSolution = new URLSearchParams(window.location.search).get('solution');
+  if (requestedSolution && solutionMap[requestedSolution]) {
+    solutionSelect.value = solutionMap[requestedSolution];
+  }
 
-  canvas.addEventListener('pointermove', (event) => {
-    const rect = canvas.getBoundingClientRect();
-    pointer.x = event.clientX - rect.left;
-    pointer.y = event.clientY - rect.top;
+  contactForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!contactForm.checkValidity()) {
+      contactForm.reportValidity();
+      return;
+    }
+
+    const data = new FormData(contactForm);
+    const value = (name) => String(data.get(name) || '').trim();
+    const subject = `[홈페이지 프로젝트 문의] ${value('organization')} · ${value('solution')}`;
+    const body = [
+      '에스에이씨솔루션 프로젝트 문의',
+      '',
+      `회사·기관명: ${value('organization')}`,
+      `담당자명: ${value('contact_name')}`,
+      `전화번호: ${value('phone')}`,
+      `이메일: ${value('email')}`,
+      `관심 솔루션: ${value('solution')}`,
+      `프로젝트 지역: ${value('region') || '미입력'}`,
+      `예산 범위: ${value('budget') || '미선택'}`,
+      '',
+      '문의 내용:',
+      value('message')
+    ].join('\n');
+
+    const status = contactForm.querySelector('[data-form-status]');
+    if (status) status.textContent = '이메일 작성 화면을 여는 중입니다. 전송 버튼을 눌러 문의를 완료해 주세요.';
+    window.location.href = `mailto:sacsound@naver.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   });
-  canvas.addEventListener('pointerleave', () => {
-    pointer.x = -1000;
-    pointer.y = -1000;
-  });
-  window.addEventListener('resize', () => {
-    window.cancelAnimationFrame(animationFrame);
-    resizeCanvas();
-    drawNetwork();
-  });
-  resizeCanvas();
-  drawNetwork();
 }
