@@ -174,6 +174,7 @@ document.querySelectorAll('[data-year]').forEach((element) => {
 
 const solutionTabs = document.querySelectorAll('[data-solution-tab]');
 const solutionPanels = document.querySelectorAll('[data-solution-panel]');
+const scrollToPageTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 if (solutionTabs.length && solutionPanels.length) {
   const selectSolutionTab = (solution) => {
     solutionTabs.forEach((tab) => {
@@ -193,6 +194,7 @@ if (solutionTabs.length && solutionPanels.length) {
     tab.addEventListener('click', () => {
       selectSolutionTab(tab.dataset.solutionTab);
       history.replaceState(null, '', `${window.location.pathname}?tab=${tab.dataset.solutionTab}`);
+      scrollToPageTop();
     });
     tab.addEventListener('keydown', (event) => {
       const currentIndex = [...solutionTabs].indexOf(tab);
@@ -206,12 +208,14 @@ if (solutionTabs.length && solutionPanels.length) {
       const targetTab = solutionTabs[targetIndex];
       targetTab.focus();
       selectSolutionTab(targetTab.dataset.solutionTab);
+      scrollToPageTop();
     });
   });
 }
 
 const technologyTabs = document.querySelectorAll('[data-technology-tab]');
 const technologyPanels = document.querySelectorAll('[data-technology-panel]');
+document.querySelectorAll('.tech-panel-intro h2 br').forEach((breakElement) => breakElement.replaceWith(' '));
 if (technologyTabs.length && technologyPanels.length) {
   const selectTechnologyTab = (technology) => {
     technologyTabs.forEach((tab) => {
@@ -231,6 +235,7 @@ if (technologyTabs.length && technologyPanels.length) {
     tab.addEventListener('click', () => {
       selectTechnologyTab(tab.dataset.technologyTab);
       history.replaceState(null, '', `${window.location.pathname}?tab=${tab.dataset.technologyTab}`);
+      scrollToPageTop();
     });
     tab.addEventListener('keydown', (event) => {
       const currentIndex = [...technologyTabs].indexOf(tab);
@@ -245,6 +250,7 @@ if (technologyTabs.length && technologyPanels.length) {
       targetTab.focus();
       selectTechnologyTab(targetTab.dataset.technologyTab);
       history.replaceState(null, '', `${window.location.pathname}?tab=${targetTab.dataset.technologyTab}`);
+      scrollToPageTop();
     });
   });
 }
