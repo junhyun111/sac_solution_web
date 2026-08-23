@@ -15,6 +15,88 @@ if (navLinks) {
     const link = navigationLinks.get(href);
     if (link) navLinks.append(link);
   });
+
+  const navigationSubmenus = {
+    'company.html': [
+      ['회사소개', 'company.html#about'],
+      ['기술·인증', 'company.html#technology'],
+      ['연혁', 'company.html#history'],
+      ['CI', 'company.html#ci'],
+      ['오시는 길', 'company.html#location'],
+    ],
+    'solutions.html': [
+      ['재난·안전', 'solutions.html?tab=safety'],
+      ['방송·문화', 'solutions.html?tab=broadcast'],
+      ['시스템 통합', 'solutions.html?tab=integration'],
+      ['스마트 통신·ICT', 'solutions.html?tab=smart'],
+    ],
+    'technology.html': [
+      ['Emergency Communication', 'technology.html?tab=emergency'],
+      ['Resilient Broadcast', 'technology.html?tab=resilient'],
+      ['Integrated Infrastructure', 'technology.html?tab=infrastructure'],
+      ['On-device AI', 'technology.html?tab=ondevice'],
+      ['Intelligent Safety', 'technology.html?tab=safety'],
+      ['ITS', 'technology.html?tab=its'],
+    ],
+  };
+
+  Object.entries(navigationSubmenus).forEach(([href, items]) => {
+    const link = [...navLinks.children].find((element) => element.matches(`a[href="${href}"]`));
+    if (!link) return;
+    const dropdown = document.createElement('div');
+    dropdown.className = 'nav-dropdown';
+    const submenu = document.createElement('div');
+    submenu.className = 'nav-submenu';
+    submenu.setAttribute('aria-label', `${link.textContent} 세부 메뉴`);
+    items.forEach(([label, destination]) => {
+      const item = document.createElement('a');
+      item.href = destination;
+      item.textContent = label;
+      submenu.append(item);
+    });
+    link.replaceWith(dropdown);
+    dropdown.append(link, submenu);
+  });
+}
+
+const solutionDescriptions = {
+  safety: '분산된 재난 정보를 경보 수신, CCTV 관제, 비상방송과 하나의 대응 흐름으로 연동합니다. 상황 발생 시 필요한 안내를 빠르게 전파하고, 현장과 관제센터가 동일한 정보를 바탕으로 대응할 수 있도록 지원합니다.',
+  broadcast: '관공서와 교육·체육·문화시설의 규모, 공간 특성, 운영 목적을 분석해 음향·영상·방송 설비를 설계합니다. 평상시 안내부터 행사 운영과 비상 상황까지 안정적으로 사용할 수 있는 방송 환경을 구축합니다.',
+  integration: '방송, 경보, CCTV, 네트워크 등 개별 설비와 데이터를 하나의 운영 환경으로 통합합니다. 기존 시스템의 연계 조건과 현장 운영 흐름을 함께 검토해 관리와 대응이 효율적으로 이어지는 구조를 설계합니다.',
+  smart: '도시와 교통 인프라에서 발생하는 현장 정보를 통신망과 통합 모니터링 체계로 연결합니다. 실시간 데이터 수집과 제어 환경을 기반으로 운영자가 시설 상태와 상황을 빠르게 판단할 수 있도록 지원합니다.',
+};
+
+Object.entries(solutionDescriptions).forEach(([solution, description]) => {
+  const summary = document.querySelector(`[data-solution-panel="${solution}"] .detail-hero p`);
+  if (summary) summary.textContent = description;
+});
+
+const siteFooter = document.querySelector('.footer');
+if (siteFooter) {
+  siteFooter.innerHTML = `
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <img class="footer-logo" src="images/saclogo.svg" alt="SAC Solution" width="110" height="62">
+          <p>경기도 남양주시 순화궁로 272 동광비즈타워 11층 1112호</p>
+          <p>031-570-2792 · sacsound@naver.com · FAX 070-7966-2795</p>
+        </div>
+        <div>
+          <h3>바로가기</h3>
+          <div class="footer-links"><a href="solutions.html">솔루션</a><a href="company.html">회사소개</a><a href="company.html#history">연혁</a></div>
+        </div>
+        <div>
+          <h3>핵심 분야</h3>
+          <div class="footer-links"><a href="solutions.html?tab=safety">재난·안전</a><a href="solutions.html?tab=broadcast">방송·문화</a><a href="solutions.html?tab=smart">스마트 통신</a></div>
+        </div>
+        <div>
+          <h3>문의</h3>
+          <div class="footer-links"><a href="contact.html">프로젝트 문의</a><a href="tel:0315702792">031-570-2792</a><a href="mailto:sacsound@naver.com">이메일 보내기</a></div>
+        </div>
+      </div>
+      <div class="copyright">© <span data-year></span> SAC Solution Corporation. All rights reserved.</div>
+    </div>
+  `;
 }
 
 const closeMenu = () => {
