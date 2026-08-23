@@ -100,9 +100,19 @@ const solutionRail = document.querySelector('.solution-rail');
 let scrollTicking = false;
 let lastScrollY = window.scrollY;
 
+const updateHeaderTheme = () => {
+  if (!siteHeader) return;
+  const probeY = Math.min(Math.max(siteHeader.offsetHeight / 2, 1), window.innerHeight - 1);
+  const underlyingElement = document.elementsFromPoint(window.innerWidth / 2, probeY)
+    .find((element) => element !== siteHeader && !siteHeader.contains(element) && element !== document.body && element !== document.documentElement);
+  const isDarkBackground = Boolean(underlyingElement?.closest('.hero, .sub-hero, .detail-hero, .cta, .footer, .anchor-nav'));
+  siteHeader.classList.toggle('on-dark-background', isDarkBackground);
+};
+
 const updateScrollState = () => {
   const currentScrollY = window.scrollY;
   siteHeader?.classList.toggle('scrolled', currentScrollY > 24);
+  updateHeaderTheme();
 
   if (siteHeader) {
     const menuIsOpen = document.body.classList.contains('menu-open');
@@ -139,19 +149,20 @@ document.querySelectorAll('[data-year]').forEach((element) => {
   element.textContent = new Date().getFullYear();
 });
 
-const solutionFilterButtons = document.querySelectorAll('[data-solution-filter]');
-const solutionCards = document.querySelectorAll('[data-solution-category]');
-if (solutionFilterButtons.length && solutionCards.length) {
-  solutionFilterButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      const filter = button.dataset.solutionFilter;
-      solutionFilterButtons.forEach((item) => {
-        item.setAttribute('aria-pressed', String(item === button));
-      });
-      solutionCards.forEach((card) => {
-        card.hidden = filter !== 'all' && card.dataset.solutionCategory !== filter;
-      });
+const solutionTabs = document.querySelectorAll('[data-solution-tab]');
+const solutionPanels = document.querySelectorAll('[data-solution-panel]');
+if (solutionTabs.length && solutionPanels.length) {
+  const selectSolutionTab = (solution) => {
+    solutionTabs.forEach((tab) => {
+      tab.setAttribute('aria-selected', String(tab.dataset.solutionTab === solution));
     });
+    solutionPanels.forEach((panel) => {
+      panel.hidden = panel.dataset.solutionPanel !== solution;
+    });
+  };
+
+  solutionTabs.forEach((tab) => {
+    tab.addEventListener('click', () => selectSolutionTab(tab.dataset.solutionTab));
   });
 }
 

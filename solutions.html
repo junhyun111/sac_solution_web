@@ -32,64 +32,51 @@
   </header>
 
   <main>
-    <section class="sub-hero">
+    <section class="sub-hero sub-hero--raised">
       <div class="container" data-reveal>
-        <h1>현장을 이해하는 기술로<br>통합 시스템을 설계합니다</h1>
-        <p>재난 대응부터 방송, 통합관제, 스마트 통신까지. 시설 환경과 운영 목적에 맞는 시스템을 선택해 확인하세요.</p>
+        <h1>안전한 현장을 위한<br>통합 솔루션</h1>
+        <p>재난과 일상에 필요한 방송·통신 기술을 하나의 운영 환경으로 연결합니다.</p>
       </div>
     </section>
 
-    <section class="section solutions-catalogue">
+    <section class="solutions-catalogue solutions-selector">
       <div class="container">
-        <div class="section-intro section-intro--center" data-reveal>
-          <p class="eyebrow">Solutions</p>
-          <h2 class="section-title">분야별 솔루션</h2>
-          <p class="section-desc">필요한 분야를 선택하면 주요 기능과 적용 대상, 구축 범위를 확인할 수 있습니다.</p>
-        </div>
-
-        <nav class="solution-filter" aria-label="솔루션 분야 필터">
-          <button type="button" data-solution-filter="all" aria-pressed="true">ALL</button>
-          <button type="button" data-solution-filter="safety" aria-pressed="false">SAFETY</button>
-          <button type="button" data-solution-filter="broadcast" aria-pressed="false">BROADCAST</button>
-          <button type="button" data-solution-filter="integration" aria-pressed="false">INTEGRATION</button>
-          <button type="button" data-solution-filter="smart" aria-pressed="false">SMART ICT</button>
+        <nav class="solution-filter" aria-label="솔루션 분야 선택" role="tablist">
+          <button type="button" role="tab" id="solution-tab-safety" aria-controls="solution-panel-safety" aria-selected="true" data-solution-tab="safety">SAFETY</button>
+          <button type="button" role="tab" id="solution-tab-broadcast" aria-controls="solution-panel-broadcast" aria-selected="false" data-solution-tab="broadcast">BROADCAST</button>
+          <button type="button" role="tab" id="solution-tab-integration" aria-controls="solution-panel-integration" aria-selected="false" data-solution-tab="integration">INTEGRATION</button>
+          <button type="button" role="tab" id="solution-tab-smart" aria-controls="solution-panel-smart" aria-selected="false" data-solution-tab="smart">SMART ICT</button>
         </nav>
-
-        <div class="solution-catalog-grid">
-          <article class="solution-catalog-card" data-solution-category="safety" data-reveal>
-            <a class="solution-catalog-media" href="solution-safety.html" aria-label="재난·안전 솔루션 상세 보기">
-              <picture><source srcset="images/integrated_control.webp" type="image/webp"><img src="images/integrated_control.png" alt="재난·안전 정보를 통합 관리하는 지능형 관제센터" width="1619" height="971" loading="lazy" decoding="async"></picture>
-            </a>
-            <div class="solution-catalog-copy"><span>01 / SAFETY</span><h2>재난·안전 솔루션</h2><p>분산된 재난 정보를 경보, CCTV, 비상방송과 연결해 신속한 현장 대응을 지원합니다.</p><a href="solution-safety.html">솔루션 살펴보기 <b aria-hidden="true">→</b></a></div>
-          </article>
-          <article class="solution-catalog-card" data-solution-category="broadcast" data-reveal>
-            <a class="solution-catalog-media" href="solution-broadcast.html" aria-label="방송·문화 설비 상세 보기">
-              <picture><source srcset="images/solution-broadcast.webp" type="image/webp"><img src="images/solution-broadcast.jpg" alt="전문 방송 및 음향 믹싱 콘솔" width="1920" height="1280" loading="lazy" decoding="async"></picture>
-            </a>
-            <div class="solution-catalog-copy"><span>02 / BROADCAST</span><h2>방송·문화 설비</h2><p>시설의 규모와 운영 목적에 맞는 음향·영상 환경과 방송 설비를 구축합니다.</p><a href="solution-broadcast.html">솔루션 살펴보기 <b aria-hidden="true">→</b></a></div>
-          </article>
-          <article class="solution-catalog-card" data-solution-category="integration" data-reveal>
-            <a class="solution-catalog-media" href="solution-integration.html" aria-label="시스템 통합 상세 보기">
-              <picture><source srcset="images/solution-integration.webp" type="image/webp"><img src="images/solution-integration.jpg" alt="시스템 통합을 위한 서버와 네트워크 인프라" width="1600" height="898" loading="lazy" decoding="async"></picture>
-            </a>
-            <div class="solution-catalog-copy"><span>03 / INTEGRATION</span><h2>시스템 통합</h2><p>개별 설비와 데이터를 하나의 운영 환경으로 통합하고 연동 방식을 설계합니다.</p><a href="solution-integration.html">솔루션 살펴보기 <b aria-hidden="true">→</b></a></div>
-          </article>
-          <article class="solution-catalog-card" data-solution-category="smart" data-reveal>
-            <a class="solution-catalog-media" href="solution-smart.html" aria-label="스마트 통신·ICT 상세 보기">
-              <picture><source srcset="images/smart_city.webp" type="image/webp"><img src="images/smart_city.png" alt="통신망으로 연결된 스마트시티 교통 인프라" width="1619" height="971" loading="lazy" decoding="async"></picture>
-            </a>
-            <div class="solution-catalog-copy"><span>04 / SMART ICT</span><h2>스마트 통신·ICT</h2><p>도시와 교통 인프라를 통신망과 통합 모니터링 체계로 연결합니다.</p><a href="solution-smart.html">솔루션 살펴보기 <b aria-hidden="true">→</b></a></div>
-          </article>
-        </div>
       </div>
     </section>
 
-    <section class="cta">
-      <div class="container cta-inner">
-        <div><h2>현장에 맞는 구축 방향이 필요하신가요?</h2><p>시설 유형과 운영 환경을 알려주시면 필요한 시스템 범위를 함께 검토하겠습니다.</p></div>
-        <a class="button button--light" href="contact.html">CONTACT <span aria-hidden="true">→</span></a>
-      </div>
-    </section>
+    <div class="solutions-inline-detail">
+      <article class="solution-panel" id="solution-panel-safety" role="tabpanel" aria-labelledby="solution-tab-safety" data-solution-panel="safety">
+        <section class="detail-hero"><div class="container detail-hero-grid"><div><span class="detail-breadcrumb">01 / SAFETY</span><h1>재난·안전<br>솔루션</h1><p>분산된 재난 정보를 경보, CCTV, 비상방송과 유기적으로 연동해 긴급 상황을 신속하게 전달합니다.</p></div><div class="detail-hero-media"><picture><source srcset="images/integrated_control.webp" type="image/webp"><img src="images/integrated_control.png" alt="재난·안전 정보를 통합 관리하는 지능형 관제센터" width="1619" height="971"></picture></div></div></section>
+        <section class="detail-overview"><div class="container detail-overview-grid"><div class="detail-overview-title"><p class="eyebrow">Overview</p><h2>재난 신호부터<br>현장 전파까지</h2><p>경보 수신과 방송 설비, 관제 환경을 하나의 대응 흐름으로 연결합니다.</p></div><dl class="detail-facts"><div><dt>적용 대상</dt><dd>공공청사, 통합관제센터, 재난 대응 시설, 다중이용시설</dd></div><div><dt>주요 기능</dt><dd>재난·민방위 경보 수신, CCTV 안전 관제, 비상방송, 실시간 정보 전파</dd></div><div><dt>구축 범위</dt><dd>현장 분석, 경보 단말 및 방송 설비, 기존 시스템 연동, 상태 모니터링</dd></div><div><dt>운영 지원</dt><dd>설비 상태 확인, 회선 이상 감시, 현장 환경에 맞는 유지보수 지원</dd></div></dl></div></section>
+        <section class="detail-capabilities"><div class="container"><div class="section-intro section-intro--center"><p class="eyebrow">Capabilities</p><h2 class="section-title">핵심 기능</h2></div><div class="detail-capability-grid"><article class="detail-capability"><span>01</span><h3>표준 경보 수신</h3><p>유무선 네트워크로 재난·민방위 표준 경보 정보를 수신합니다.</p></article><article class="detail-capability"><span>02</span><h3>즉시 비상방송</h3><p>경보 수신과 동시에 우선방송을 시작해 초기 안내 지연을 줄입니다.</p></article><article class="detail-capability"><span>03</span><h3>통합 상태 감시</h3><p>방송 장비와 스피커 회선 상태를 확인해 대응 체계의 연속성을 지원합니다.</p></article></div></div></section>
+      </article>
+
+      <article class="solution-panel" id="solution-panel-broadcast" role="tabpanel" aria-labelledby="solution-tab-broadcast" data-solution-panel="broadcast" hidden>
+        <section class="detail-hero"><div class="container detail-hero-grid"><div><span class="detail-breadcrumb">02 / BROADCAST</span><h1>방송·문화<br>설비</h1><p>관공서와 교육·체육·문화시설의 규모와 운영 목적에 맞는 음향·영상 환경을 구축합니다.</p></div><div class="detail-hero-media"><picture><source srcset="images/solution-broadcast.webp" type="image/webp"><img src="images/solution-broadcast.jpg" alt="전문 방송 및 음향 믹싱 콘솔" width="1920" height="1280"></picture></div></div></section>
+        <section class="detail-overview"><div class="container detail-overview-grid"><div class="detail-overview-title"><p class="eyebrow">Overview</p><h2>시설의 용도에 맞는<br>방송 환경</h2><p>이용 편의와 시설 운영 효율을 함께 고려해 장비 구성부터 시스템 연동까지 지원합니다.</p></div><dl class="detail-facts"><div><dt>적용 대상</dt><dd>관공서, 교육시설, 체육시설, 공연장 및 문화공간</dd></div><div><dt>주요 기능</dt><dd>구내·전관 방송, 전문 AV, 주차관제, 출입통제, 시설 통합 운영</dd></div><div><dt>구축 범위</dt><dd>음향·영상 설계, 장비 구성, 배선 및 시공, 운영 시스템 연동</dd></div><div><dt>운영 지원</dt><dd>시설별 사용 환경을 반영한 운용 구성과 설비 유지보수 지원</dd></div></dl></div></section>
+        <section class="detail-capabilities"><div class="container"><div class="section-intro section-intro--center"><p class="eyebrow">Capabilities</p><h2 class="section-title">핵심 기능</h2></div><div class="detail-capability-grid"><article class="detail-capability"><span>01</span><h3>구내·전관 방송</h3><p>시설 규모와 안내 목적에 맞는 방송 설비를 구성합니다.</p></article><article class="detail-capability"><span>02</span><h3>전문 AV 시스템</h3><p>음향과 영상 장비를 공간의 사용 목적에 맞춰 설계합니다.</p></article><article class="detail-capability"><span>03</span><h3>시설 운영 연동</h3><p>주차·출입 등 연계 설비를 포함한 운영 환경을 구축합니다.</p></article></div></div></section>
+      </article>
+
+      <article class="solution-panel" id="solution-panel-integration" role="tabpanel" aria-labelledby="solution-tab-integration" data-solution-panel="integration" hidden>
+        <section class="detail-hero"><div class="container detail-hero-grid"><div><span class="detail-breadcrumb">03 / INTEGRATION</span><h1>시스템<br>통합</h1><p>개별 설비와 데이터를 하나의 운영 흐름으로 연결해 더 명확한 시설 관리 환경을 만듭니다.</p></div><div class="detail-hero-media"><picture><source srcset="images/solution-integration.webp" type="image/webp"><img src="images/solution-integration.jpg" alt="통합 관제 환경을 구성하는 시스템 설비" width="1920" height="1280"></picture></div></div></section>
+        <section class="detail-overview"><div class="container detail-overview-grid"><div class="detail-overview-title"><p class="eyebrow">Overview</p><h2>분산된 설비와 정보를<br>하나의 체계로</h2><p>설계 단계부터 시공, 데이터 연동, 운영 이후의 관리까지 통합 관점으로 지원합니다.</p></div><dl class="detail-facts"><div><dt>적용 대상</dt><dd>통합상황실, 공공·산업시설, 복합시설, 시설 운영 조직</dd></div><div><dt>주요 기능</dt><dd>재난 플랫폼 컨설팅, SI·FMS·BEMS, 통합배선, 통합 모니터링</dd></div><div><dt>구축 범위</dt><dd>요구사항 분석, 통합 설계, 정보통신공사, 개별 장비·데이터 연동</dd></div><div><dt>운영 지원</dt><dd>구축 후 시스템 점검과 유지보수로 운영 안정성을 지원</dd></div></dl></div></section>
+        <section class="detail-capabilities"><div class="container"><div class="section-intro section-intro--center"><p class="eyebrow">Capabilities</p><h2 class="section-title">핵심 기능</h2></div><div class="detail-capability-grid"><article class="detail-capability"><span>01</span><h3>통합상황실 구축</h3><p>운영자가 핵심 정보를 한눈에 파악할 수 있는 관제 환경을 구성합니다.</p></article><article class="detail-capability"><span>02</span><h3>통합배선 설계</h3><p>시설의 확장성과 유지관리 효율을 고려해 통신 인프라를 설계합니다.</p></article><article class="detail-capability"><span>03</span><h3>정보통신공사·유지보수</h3><p>시공부터 점검, 장애 대응까지 운영 단계에 맞춰 지원합니다.</p></article></div></div></section>
+      </article>
+
+      <article class="solution-panel" id="solution-panel-smart" role="tabpanel" aria-labelledby="solution-tab-smart" data-solution-panel="smart" hidden>
+        <section class="detail-hero"><div class="container detail-hero-grid"><div><span class="detail-breadcrumb">04 / SMART ICT</span><h1>스마트<br>통신·ICT</h1><p>도시와 도로의 현장 정보를 빠르게 수집하고, 연결된 데이터로 더 효율적인 운영을 지원합니다.</p></div><div class="detail-hero-media"><picture><source srcset="images/smart_city.webp" type="image/webp"><img src="images/smart_city.png" alt="스마트시티 기반의 통합 교통 및 도시 인프라" width="1920" height="1080"></picture></div></div></section>
+        <section class="detail-overview"><div class="container detail-overview-grid"><div class="detail-overview-title"><p class="eyebrow">Overview</p><h2>현장 데이터가 연결되는<br>스마트 인프라</h2><p>통신 인프라와 현장 장비, 모니터링 환경을 하나로 구성해 도시 운영의 가시성을 높입니다.</p></div><dl class="detail-facts"><div><dt>적용 대상</dt><dd>스마트시티, 도로·교통시설, 도시 기반시설, 통합 모니터링 센터</dd></div><div><dt>주요 기능</dt><dd>지능형 교통체계, 교통정보 수집·제공, 신호제어, 통합 모니터링</dd></div><div><dt>구축 범위</dt><dd>네트워크 인프라, 현장 단말, 정보 수집, 관제 시스템 통합</dd></div><div><dt>운영 지원</dt><dd>장비·네트워크 상태 확인과 운영 환경에 맞춘 유지보수 지원</dd></div></dl></div></section>
+        <section class="detail-capabilities"><div class="container"><div class="section-intro section-intro--center"><p class="eyebrow">Capabilities</p><h2 class="section-title">핵심 기능</h2></div><div class="detail-capability-grid"><article class="detail-capability"><span>01</span><h3>스마트시티 인프라</h3><p>도시 기반시설과 통신 환경을 연결하는 확장 가능한 인프라를 구성합니다.</p></article><article class="detail-capability"><span>02</span><h3>교통정보 수집·제공</h3><p>현장 데이터를 수집하고 필요한 운영 주체와 이용자에게 전달합니다.</p></article><article class="detail-capability"><span>03</span><h3>통합 모니터링</h3><p>시설과 네트워크의 상태를 통합적으로 파악할 수 있는 환경을 구축합니다.</p></article></div></div></section>
+      </article>
+    </div>
+
+    <section class="cta"><div class="container cta-inner"><div><h2>현장에 맞는 구축 방향이 필요하신가요?</h2><p>시설 유형과 운영 환경을 알려주시면 필요한 시스템 범위를 함께 검토하겠습니다.</p></div><a class="button button--light" href="contact.html">CONTACT <span aria-hidden="true">→</span></a></div></section>
   </main>
 
   <footer class="footer">
