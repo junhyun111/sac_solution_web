@@ -2,6 +2,21 @@ const menuButton = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('.nav-links');
 const siteHeader = document.querySelector('.site-header');
 
+if (navLinks) {
+  const navigationOrder = ['index.html', 'company.html', 'solutions.html', 'technology.html', 'contact.html'];
+  const navigationLinks = new Map([...navLinks.querySelectorAll('a')].map((link) => [link.getAttribute('href'), link]));
+  if (!navigationLinks.has('technology.html')) {
+    const technologyLink = document.createElement('a');
+    technologyLink.href = 'technology.html';
+    technologyLink.textContent = 'TECHNOLOGY';
+    navigationLinks.set('technology.html', technologyLink);
+  }
+  navigationOrder.forEach((href) => {
+    const link = navigationLinks.get(href);
+    if (link) navLinks.append(link);
+  });
+}
+
 const closeMenu = () => {
   if (!menuButton || !navLinks) return;
   menuButton.setAttribute('aria-expanded', 'false');
@@ -109,7 +124,7 @@ const updateHeaderTheme = () => {
     .find(Boolean);
   const fallbackDarkSurface = document.elementsFromPoint(window.innerWidth / 2, probeY)
     .filter((element) => element !== siteHeader && !siteHeader.contains(element))
-    .map((element) => element.closest('.detail-hero, .cta, .footer, .anchor-nav, .solutions-page .solutions-catalogue, .solutions-page .detail-overview, .solutions-page .detail-capabilities'))
+    .map((element) => element.closest('.detail-hero, .cta, .footer, .solutions-page .solutions-catalogue, .solutions-page .detail-overview, .solutions-page .detail-capabilities, .technology-page .tech-hero, .technology-page .tech-index, .technology-page .tech-section, .technology-page .tech-explorer, .technology-page .tech-panel'))
     .find(Boolean);
   const isDarkBackground = themeCarrier
     ? themeCarrier.dataset.headerTheme === 'dark'
@@ -169,8 +184,16 @@ if (solutionTabs.length && solutionPanels.length) {
     });
   };
 
+  const requestedSolutionTab = new URLSearchParams(window.location.search).get('tab');
+  if ([...solutionTabs].some((tab) => tab.dataset.solutionTab === requestedSolutionTab)) {
+    selectSolutionTab(requestedSolutionTab);
+  }
+
   solutionTabs.forEach((tab) => {
-    tab.addEventListener('click', () => selectSolutionTab(tab.dataset.solutionTab));
+    tab.addEventListener('click', () => {
+      selectSolutionTab(tab.dataset.solutionTab);
+      history.replaceState(null, '', `${window.location.pathname}?tab=${tab.dataset.solutionTab}`);
+    });
     tab.addEventListener('keydown', (event) => {
       const currentIndex = [...solutionTabs].indexOf(tab);
       let targetIndex;
@@ -183,6 +206,45 @@ if (solutionTabs.length && solutionPanels.length) {
       const targetTab = solutionTabs[targetIndex];
       targetTab.focus();
       selectSolutionTab(targetTab.dataset.solutionTab);
+    });
+  });
+}
+
+const technologyTabs = document.querySelectorAll('[data-technology-tab]');
+const technologyPanels = document.querySelectorAll('[data-technology-panel]');
+if (technologyTabs.length && technologyPanels.length) {
+  const selectTechnologyTab = (technology) => {
+    technologyTabs.forEach((tab) => {
+      tab.setAttribute('aria-selected', String(tab.dataset.technologyTab === technology));
+    });
+    technologyPanels.forEach((panel) => {
+      panel.hidden = panel.dataset.technologyPanel !== technology;
+    });
+  };
+
+  const requestedTechnologyTab = new URLSearchParams(window.location.search).get('tab');
+  if ([...technologyTabs].some((tab) => tab.dataset.technologyTab === requestedTechnologyTab)) {
+    selectTechnologyTab(requestedTechnologyTab);
+  }
+
+  technologyTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      selectTechnologyTab(tab.dataset.technologyTab);
+      history.replaceState(null, '', `${window.location.pathname}?tab=${tab.dataset.technologyTab}`);
+    });
+    tab.addEventListener('keydown', (event) => {
+      const currentIndex = [...technologyTabs].indexOf(tab);
+      let targetIndex;
+      if (event.key === 'ArrowRight') targetIndex = (currentIndex + 1) % technologyTabs.length;
+      if (event.key === 'ArrowLeft') targetIndex = (currentIndex - 1 + technologyTabs.length) % technologyTabs.length;
+      if (event.key === 'Home') targetIndex = 0;
+      if (event.key === 'End') targetIndex = technologyTabs.length - 1;
+      if (targetIndex === undefined) return;
+      event.preventDefault();
+      const targetTab = technologyTabs[targetIndex];
+      targetTab.focus();
+      selectTechnologyTab(targetTab.dataset.technologyTab);
+      history.replaceState(null, '', `${window.location.pathname}?tab=${targetTab.dataset.technologyTab}`);
     });
   });
 }
