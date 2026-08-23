@@ -183,7 +183,7 @@ address { font-style: normal; }
 .hero-grid { position: relative; z-index: 1; display: grid; padding: 92px 0 126px; place-items: center; }
 .hero-copy { max-width: 880px; margin-inline: auto; text-align: center; }
 .hero .eyebrow { justify-content: center; color: var(--cyan-200); }
-.hero h1 { margin: 0; font-size: clamp(37px, 3.8vw, 50px); font-weight: 700; line-height: 1.3; letter-spacing: -.052em; }
+.hero h1 { margin: 0; font-size: clamp(44px, 4.5vw, 60px); font-weight: 700; line-height: 1.2; letter-spacing: -.055em; }
 .hero-line { display: block; opacity: 0; transform: translateY(32px); animation: hero-line .85s cubic-bezier(.16, 1, .3, 1) forwards; }
 .hero-line:nth-child(2) { animation-delay: .1s; }
 .hero-line:nth-child(3) { animation-delay: .2s; }
@@ -193,6 +193,12 @@ address { font-style: normal; }
 .hero-solution-nav::-webkit-scrollbar { display: none; }
 .hero-solution-nav a { flex: 0 0 auto; padding: 10px 22px; border: 1px solid rgba(255, 255, 255, .1); border-radius: 999px; background: rgba(255, 255, 255, .08); color: #d9e4ef; font-size: 12px; font-weight: 600; transition: background-color .2s ease, border-color .2s ease; }
 .hero-solution-nav a:hover { border-color: rgba(169, 216, 235, .48); background: rgba(255, 255, 255, .14); color: #fff; }
+.solution-strip { border-bottom: 1px solid var(--line); background: #fff; }
+.solution-strip .container { display: grid; grid-template-columns: repeat(4, 1fr); }
+.solution-strip a { display: flex; min-height: 74px; align-items: center; justify-content: center; gap: 10px; border-right: 1px solid var(--line); color: var(--ink); font-size: 13px; font-weight: 700; transition: background-color .2s ease, color .2s ease; }
+.solution-strip a:first-child { border-left: 1px solid var(--line); }
+.solution-strip a span { color: var(--blue-600); font: 700 10px/1 "Manrope", sans-serif; letter-spacing: .1em; }
+.solution-strip a:hover { background: var(--blue-100); color: var(--blue-700); }
 
 .business-section { background: var(--surface); }
 .business-section .section-intro--split,
@@ -576,6 +582,10 @@ address { font-style: normal; }
   .hero { min-height: 720px; background-position: 58% center; }
   .hero-grid { padding: 88px 0 116px; }
   .hero h1 { font-size: clamp(32px, 9vw, 39px); }
+  .solution-strip { overflow-x: auto; scrollbar-width: none; }
+  .solution-strip::-webkit-scrollbar { display: none; }
+  .solution-strip .container { display: flex; width: max-content; min-width: 100%; margin: 0; }
+  .solution-strip a { min-height: 58px; padding: 0 18px; font-size: 12px; }
   .hero h1,
   .sub-hero h1 { word-break: normal; overflow-wrap: anywhere; }
   .hero-lead { max-width: 340px; font-size: 14px; }

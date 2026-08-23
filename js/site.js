@@ -60,7 +60,7 @@ const centerAnchorLink = (link) => {
 };
 
 const getNavigationOffset = () => {
-  const headerHeight = siteHeader?.offsetHeight || 0;
+  const headerHeight = siteHeader?.classList.contains('header-hidden') ? 0 : siteHeader?.offsetHeight || 0;
   const anchorHeight = document.querySelector('.anchor-nav')?.offsetHeight || 0;
   return headerHeight + anchorHeight + 12;
 };
@@ -103,9 +103,17 @@ let lastScrollY = window.scrollY;
 const updateHeaderTheme = () => {
   if (!siteHeader) return;
   const probeY = Math.min(Math.max(siteHeader.offsetHeight / 2, 1), window.innerHeight - 1);
-  const underlyingElement = document.elementsFromPoint(window.innerWidth / 2, probeY)
-    .find((element) => element !== siteHeader && !siteHeader.contains(element) && element !== document.body && element !== document.documentElement);
-  const isDarkBackground = Boolean(underlyingElement?.closest('.hero, .sub-hero, .detail-hero, .cta, .footer, .anchor-nav'));
+  const themeCarrier = document.elementsFromPoint(window.innerWidth / 2, probeY)
+    .filter((element) => element !== siteHeader && !siteHeader.contains(element))
+    .map((element) => element.closest('[data-header-theme]'))
+    .find(Boolean);
+  const fallbackDarkSurface = document.elementsFromPoint(window.innerWidth / 2, probeY)
+    .filter((element) => element !== siteHeader && !siteHeader.contains(element))
+    .map((element) => element.closest('.detail-hero, .cta, .footer, .anchor-nav'))
+    .find(Boolean);
+  const isDarkBackground = themeCarrier
+    ? themeCarrier.dataset.headerTheme === 'dark'
+    : Boolean(fallbackDarkSurface);
   siteHeader.classList.toggle('on-dark-background', isDarkBackground);
 };
 
@@ -163,6 +171,19 @@ if (solutionTabs.length && solutionPanels.length) {
 
   solutionTabs.forEach((tab) => {
     tab.addEventListener('click', () => selectSolutionTab(tab.dataset.solutionTab));
+    tab.addEventListener('keydown', (event) => {
+      const currentIndex = [...solutionTabs].indexOf(tab);
+      let targetIndex;
+      if (event.key === 'ArrowRight') targetIndex = (currentIndex + 1) % solutionTabs.length;
+      if (event.key === 'ArrowLeft') targetIndex = (currentIndex - 1 + solutionTabs.length) % solutionTabs.length;
+      if (event.key === 'Home') targetIndex = 0;
+      if (event.key === 'End') targetIndex = solutionTabs.length - 1;
+      if (targetIndex === undefined) return;
+      event.preventDefault();
+      const targetTab = solutionTabs[targetIndex];
+      targetTab.focus();
+      selectSolutionTab(targetTab.dataset.solutionTab);
+    });
   });
 }
 
