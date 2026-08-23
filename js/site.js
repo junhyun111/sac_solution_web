@@ -45,6 +45,136 @@ if (menuButton && navLinks) {
   });
 }
 
+const technologyArchitectures = {
+  emergency: {
+    label: '긴급방송 동작 흐름도',
+    steps: [
+      ['경보 수신', '유무선 네트워크로 표준 경보 정보 수신'],
+      ['SAC 경보 단말', '수신 정보 확인 및 방송 제어 신호 생성'],
+      ['우선방송', '내장 앰프와 우선 스피커로 즉시 안내'],
+      ['자동 전환', '기존 전관방송 기동 후 방송 경로 전환'],
+      ['상태 모니터링', '앰프 출력과 스피커 회선 이상 감시'],
+    ],
+  },
+  resilient: {
+    label: '방송 연속성 확보 흐름도',
+    steps: [
+      ['상태 감지', '앰프와 스피커 회선 상태를 상시 확인'],
+      ['이상 판단', '장비·회선의 이상 구간과 영향을 분석'],
+      ['대체 경로', '필요한 방송 경로와 우선순위를 선택'],
+      ['안내 유지', '중요 구역의 비상 안내를 지속'],
+      ['운영 확인', '복구 상태와 방송 체계 가용성을 점검'],
+    ],
+  },
+  infrastructure: {
+    label: '통합 인프라 운영 흐름도',
+    steps: [
+      ['현장 설비', '방송·경보·CCTV·센서 등 개별 설비 연결'],
+      ['데이터 수집', '상태와 이벤트 정보를 표준 흐름으로 수집'],
+      ['통합 플랫폼', '데이터와 제어 조건을 하나의 환경으로 통합'],
+      ['통합 관제', '운영자가 현장 상황과 설비 상태를 확인'],
+      ['운영 연동', '필요한 제어와 업무 조치로 연결'],
+    ],
+  },
+  ondevice: {
+    label: '온디바이스 AI 방송 흐름도',
+    steps: [
+      ['현장 입력', '음향·센서 등 현장 데이터를 수집'],
+      ['On-device AI', '현장 장치에서 데이터를 즉시 분석'],
+      ['상황 분석', '이벤트 유형과 위험 수준을 판단'],
+      ['로컬 판단', '외부 연결에 덜 의존해 대응을 결정'],
+      ['맞춤 방송', '상황에 맞는 안내 방송으로 연결'],
+    ],
+  },
+  safety: {
+    label: '지능형 안전 대응 흐름도',
+    steps: [
+      ['센서·영상', '여러 현장 신호와 설비 상태를 수집'],
+      ['위험 징후', '비정상 상황과 위험 이벤트를 감지'],
+      ['상황 판단', '위치·유형·영향도를 종합적으로 분석'],
+      ['대응 시나리오', '상황에 맞는 경보와 안내를 선택'],
+      ['방송·관제', '현장 전파와 운영자 대응으로 연결'],
+    ],
+  },
+  its: {
+    label: '지능형 교통 운영 흐름도',
+    steps: [
+      ['현장 장비', '도로·교차로의 영상과 제어 설비 연결'],
+      ['교통 데이터', '교통량과 현장 정보를 수집·전달'],
+      ['통신 네트워크', '현장 장비와 통합센터를 안정적으로 연결'],
+      ['통합 관제', '교통 상황과 시설 상태를 함께 확인'],
+      ['신호·운영', '운영 판단을 현장 제어와 안내에 반영'],
+    ],
+  },
+};
+
+Object.entries(technologyArchitectures).forEach(([technology, architecture]) => {
+  const panel = document.querySelector(`[data-technology-panel="${technology}"]`);
+  const visual = panel?.querySelector('.tech-visual, .system-architecture');
+  if (!visual) return;
+
+  if (!visual.previousElementSibling?.classList.contains('tech-architecture-heading')) {
+    const architectureHeading = document.createElement('h3');
+    architectureHeading.className = 'tech-architecture-heading';
+    architectureHeading.textContent = 'SYSTEM ARCHITECTURE';
+    visual.before(architectureHeading);
+  }
+
+  visual.className = 'system-architecture';
+  visual.setAttribute('aria-label', architecture.label);
+  visual.innerHTML = `
+    <ol class="system-architecture__steps">
+      ${architecture.steps.map(([title, description], index) => `<li><b>${String(index + 1).padStart(2, '0')}</b><h3>${title}</h3><p>${description}</p></li>`).join('')}
+    </ol>
+  `;
+});
+
+const technologyNarratives = {
+  emergency: '유·무선 네트워크 환경과 기존 전관방송 설비의 상태를 함께 고려해, 방송 시작 시점과 전환 조건을 세밀하게 설계합니다. 필요한 안내는 빠르게 시작하고, 이후에는 시설의 기존 방송 체계와 안정적으로 연동할 수 있도록 구성합니다.',
+  resilient: '앰프와 스피커 회선, 방송 경로의 상태를 지속적으로 확인하고 일부 구간의 이상이 전체 안내 체계의 중단으로 이어지지 않도록 대비합니다. 시설 규모와 중요 구역에 따라 우선순위와 대체 경로를 검토해 가용성을 높입니다.',
+  infrastructure: '통합의 핵심은 장비를 한 화면에 모으는 데 있지 않습니다. 각 설비의 데이터 형식과 제어 조건, 운영 담당자의 업무 흐름을 분석해 정보가 필요한 시점에 정확히 전달되고 필요한 조치로 이어지는 구조를 만듭니다.',
+  ondevice: '현장 장치에서 AI 추론을 수행하면 외부 서버 연결이나 전송 지연에 덜 의존하면서 이벤트에 빠르게 대응할 수 있습니다. SAC Solution은 음향·센서 정보와 현장 방송의 연결 방식을 검토하며, 적용 환경에 맞는 지능형 안내 기술을 연구하고 있습니다.',
+  safety: '영상·음향·환경 센서와 설비 상태 정보는 각각 분리된 데이터가 아니라 하나의 안전 판단 근거가 될 수 있습니다. 여러 신호를 연결해 위험 징후를 더 빨리 파악하고, 상황과 위치에 맞는 방송·경보·관제 동작으로 이어지는 체계를 설계합니다.',
+  its: '교통 인프라는 현장 장비, 통신망, 신호 제어와 통합 관제가 동시에 작동해야 합니다. 도로와 교차로에서 수집되는 정보를 신뢰성 있게 전달하고, 운영자가 교통 상황과 시설 상태를 함께 판단할 수 있는 연결 구조를 구축합니다.',
+};
+
+Object.entries(technologyNarratives).forEach(([technology, narrative]) => {
+  const intro = document.querySelector(`[data-technology-panel="${technology}"] .tech-panel-intro`);
+  if (!intro || intro.querySelector('.tech-panel-detail')) return;
+  const detail = document.createElement('p');
+  detail.className = 'tech-panel-detail';
+  detail.textContent = narrative;
+  intro.append(detail);
+});
+
+document.querySelectorAll('.technology-page .tech-status').forEach((element) => element.remove());
+document.querySelectorAll('.technology-page .tech-detail > h3').forEach((element) => {
+  element.textContent = 'KEY TECHNOLOGIES';
+});
+
+const animatedComponentSelectors = [
+  '.solutions-page .solution-filter',
+  '.solutions-page .detail-hero-grid > *',
+  '.solutions-page .detail-overview-grid > *',
+  '.solutions-page .detail-capabilities .section-intro',
+  '.solutions-page .detail-capability',
+  '.technology-page .tech-hero--simple .container',
+  '.technology-page .tech-tabs',
+  '.technology-page .tech-panel-intro',
+  '.technology-page .tech-visual, .technology-page .system-architecture',
+  '.technology-page .tech-detail > h3, .technology-page .tech-architecture-heading',
+  '.technology-page .tech-detail-grid article',
+  '.technology-page .related-solutions',
+];
+
+document.querySelectorAll(animatedComponentSelectors.join(',')).forEach((element) => {
+  element.setAttribute('data-reveal', '');
+});
+
+document.querySelectorAll(
+  '.solutions-page .detail-hero-grid, .solutions-page .detail-overview-grid, .solutions-page .detail-capability-grid, .technology-page .tech-detail-grid',
+).forEach((element) => element.classList.add('stagger'));
+
 const revealElements = document.querySelectorAll('[data-reveal]');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
