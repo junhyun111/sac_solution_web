@@ -109,7 +109,7 @@ const updateHeaderTheme = () => {
     .find(Boolean);
   const fallbackDarkSurface = document.elementsFromPoint(window.innerWidth / 2, probeY)
     .filter((element) => element !== siteHeader && !siteHeader.contains(element))
-    .map((element) => element.closest('.detail-hero, .cta, .footer, .anchor-nav'))
+    .map((element) => element.closest('.detail-hero, .cta, .footer, .anchor-nav, .solutions-page .solutions-catalogue, .solutions-page .detail-overview, .solutions-page .detail-capabilities'))
     .find(Boolean);
   const isDarkBackground = themeCarrier
     ? themeCarrier.dataset.headerTheme === 'dark'

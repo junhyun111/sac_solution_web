@@ -133,23 +133,10 @@ address { font-style: normal; }
 .nav-links { position: absolute; left: 50%; display: flex; height: 100%; align-items: center; gap: 42px; transform: translateX(-50%); }
 .nav-links > a { position: relative; display: inline-flex; align-items: center; color: rgba(23, 42, 61, .82); font-size: 14px; font-weight: 600; }
 .site-header.on-dark-background .nav-links > a { color: rgba(239, 247, 255, .82); }
-.nav-links > a:not(.nav-cta)::after {
-  position: absolute;
-  right: 0;
-  bottom: -13px;
-  left: 0;
-  height: 2px;
-  content: "";
-  background: var(--cyan-200);
-  transform: scaleX(0);
-  transition: transform .2s ease;
-}
 .nav-links > a:hover,
 .nav-links > a[aria-current="page"] { color: var(--ink); }
 .site-header.on-dark-background .nav-links > a:hover,
 .site-header.on-dark-background .nav-links > a[aria-current="page"] { color: #fff; }
-.nav-links > a:hover::after,
-.nav-links > a[aria-current="page"]::after { transform: scaleX(1); }
 .nav-cta {
   min-height: 42px;
   justify-content: center;
@@ -187,7 +174,7 @@ address { font-style: normal; }
 .hero-line { display: block; opacity: 0; transform: translateY(32px); animation: hero-line .85s cubic-bezier(.16, 1, .3, 1) forwards; }
 .hero-line:nth-child(2) { animation-delay: .1s; }
 .hero-line:nth-child(3) { animation-delay: .2s; }
-.hero-lead { max-width: 700px; margin: 26px auto 34px; color: #cbd9e8; font-size: clamp(15px, 1.35vw, 17px); }
+.hero-lead { max-width: 700px; margin: 56px auto 72px; color: #cbd9e8; font-size: clamp(15px, 1.35vw, 17px); }
 .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 .hero-explore { display: inline-flex; align-items: center; gap: 16px; padding: 10px 0 12px; border-bottom: 1px solid rgba(255, 255, 255, .55); color: #fff; font: 700 14px/1 "Manrope", "Noto Sans KR", sans-serif; letter-spacing: .08em; transition: border-color .2s ease, color .2s ease; }
 .hero-explore span { font-size: 22px; font-weight: 400; line-height: .65; transition: transform .22s ease; }
@@ -384,6 +371,35 @@ address { font-style: normal; }
 .detail-capability span { color: var(--blue-600); font: 700 11px/1 "Manrope", sans-serif; }
 .detail-capability h3 { margin: 40px 0 10px; font-size: 20px; letter-spacing: -.03em; }
 .detail-capability p { margin: 0; color: var(--text); font-size: 13px; }
+
+/* LG AI Research-inspired solutions environment */
+.solutions-page { background: #050505; color: #f5f5f5; }
+.solutions-page .sub-hero { min-height: 410px; background: #050505; }
+.solutions-page .sub-hero::before { background: transparent; }
+.solutions-page .sub-hero h1 { color: #f5f5f5; font-family: "Manrope", "Noto Sans KR", sans-serif; font-weight: 600; letter-spacing: -.035em; }
+.solutions-page .sub-hero p:last-child { color: #a9a9ad; font-family: "Manrope", "Noto Sans KR", sans-serif; font-size: 14px; letter-spacing: .02em; }
+.solutions-page .solutions-catalogue { background: #050505; }
+.solutions-page .solutions-selector { padding-top: 0; }
+.solutions-page .solution-filter { border-bottom-color: #303034; }
+.solutions-page .solution-filter button { color: #85858d; }
+.solutions-page .solution-filter button:hover,
+.solutions-page .solution-filter button[aria-selected="true"] { border-bottom-color: #fff; color: #fff; }
+.solutions-page .solutions-inline-detail .detail-hero { border-top: 1px solid #242428; background: #050505; }
+.solutions-page .detail-hero { color: #f5f5f5; }
+.solutions-page .detail-hero p { color: #aaaab0; }
+.solutions-page .detail-hero-media { border: 1px solid #25252a; background: #101014; }
+.solutions-page .detail-overview { background: #0d0d0f; }
+.solutions-page .detail-overview-title h2 { color: #f4f4f5; }
+.solutions-page .detail-overview-title p,
+.solutions-page .detail-facts dd { color: #a7a7ad; }
+.solutions-page .detail-facts,
+.solutions-page .detail-facts div { border-color: #303035; }
+.solutions-page .detail-facts dt { color: #f2f2f4; }
+.solutions-page .detail-capabilities { background: #050505; }
+.solutions-page .section-title { color: #f4f4f5; }
+.solutions-page .detail-capability { border-color: #2d2d32; background: #121215; }
+.solutions-page .detail-capability h3 { color: #f4f4f5; }
+.solutions-page .detail-capability p { color: #a7a7ad; }
 
 /* Company */
 .company-intro { display: grid; align-items: center; grid-template-columns: 1.05fr .95fr; gap: clamp(50px, 7vw, 86px); }
