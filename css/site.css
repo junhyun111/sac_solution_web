@@ -129,7 +129,7 @@ address { font-style: normal; }
 .nav { position: relative; display: flex; height: 100%; align-items: center; justify-content: space-between; }
 .brand { display: inline-flex; align-items: center; }
 .brand img { width: 108px; height: auto; filter: none; }
-.site-header.on-dark-background .brand img { filter: brightness(0) invert(1); }
+.site-header.on-dark-background .brand img { filter: none; }
 .nav-links { position: absolute; left: 50%; display: flex; height: 100%; align-items: center; gap: 42px; transform: translateX(-50%); }
 .nav-links > a,.nav-dropdown > a { position: relative; display: inline-flex; height: 100%; align-items: center; color: rgba(23, 42, 61, .82); font-size: 14px; font-weight: 600; }
 .nav-dropdown { position: relative; display: flex; height: 100%; align-items: center; }
@@ -168,10 +168,14 @@ address { font-style: normal; }
   overflow: hidden;
   color: #fff;
   background-color: var(--navy-950);
-  background-image: linear-gradient(90deg, rgba(1, 7, 17, .68), rgba(1, 8, 19, .46), rgba(1, 7, 17, .60)), linear-gradient(180deg, rgba(1, 7, 17, .10), rgba(1, 7, 17, .40)), url("../images/main_background.webp");
+  background-image: url("../images/main_background.webp");
   background-position: center;
   background-size: cover;
 }
+.hero::after { position: absolute; z-index: 0; inset: 0; content: ""; background: linear-gradient(90deg, rgba(1, 7, 17, .68), rgba(1, 8, 19, .46), rgba(1, 7, 17, .60)), linear-gradient(180deg, rgba(1, 7, 17, .10), rgba(1, 7, 17, .40)); pointer-events: none; }
+.hero-video { position: absolute; z-index: 0; inset: 0; overflow: hidden; }
+.hero-video__item { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0; transition: opacity .8s ease; }
+.hero-video__item.is-active { opacity: 1; }
 .hero-grid { position: relative; z-index: 1; display: grid; padding: 92px 0 126px; place-items: center; }
 .hero-copy { max-width: 880px; margin-inline: auto; text-align: center; }
 .hero .eyebrow { justify-content: center; color: var(--cyan-200); }

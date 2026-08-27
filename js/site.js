@@ -2,6 +2,71 @@ const menuButton = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('.nav-links');
 const siteHeader = document.querySelector('.site-header');
 
+const heroVideos = [...document.querySelectorAll('.hero-video__item')];
+if (heroVideos.length === 2) {
+  const heroPlaylist = [
+    'video/light.mp4',
+    'video/building.mp4',
+    'video/hall.mp4',
+    'video/train.mp4',
+    'video/amp.mp4',
+  ];
+  let activePlayerIndex = 0;
+  let playlistIndex = 0;
+  let isTransitioning = false;
+
+  const loadVideo = (player, source) => {
+    player.src = source;
+    player.load();
+  };
+
+  const prepareFollowingVideo = () => {
+    const followingPlayer = heroVideos[1 - activePlayerIndex];
+    const followingIndex = (playlistIndex + 1) % heroPlaylist.length;
+    loadVideo(followingPlayer, heroPlaylist[followingIndex]);
+  };
+
+  const transitionToFollowingVideo = () => {
+    if (isTransitioning) return;
+    isTransitioning = true;
+
+    const currentPlayer = heroVideos[activePlayerIndex];
+    const followingPlayerIndex = 1 - activePlayerIndex;
+    const followingPlayer = heroVideos[followingPlayerIndex];
+
+    followingPlayer.play().then(() => {
+      followingPlayer.classList.add('is-active');
+      currentPlayer.classList.remove('is-active');
+
+      window.setTimeout(() => {
+        currentPlayer.pause();
+        currentPlayer.currentTime = 0;
+        activePlayerIndex = followingPlayerIndex;
+        playlistIndex = (playlistIndex + 1) % heroPlaylist.length;
+        isTransitioning = false;
+        prepareFollowingVideo();
+      }, 850);
+    }).catch(() => {
+      isTransitioning = false;
+    });
+  };
+
+  heroVideos.forEach((player, playerIndex) => {
+    player.muted = true;
+    player.playsInline = true;
+    player.addEventListener('timeupdate', () => {
+      if (playerIndex !== activePlayerIndex || !Number.isFinite(player.duration)) return;
+      if (player.duration - player.currentTime <= 0.8) transitionToFollowingVideo();
+    });
+    player.addEventListener('ended', transitionToFollowingVideo);
+  });
+
+  prepareFollowingVideo();
+  heroVideos[activePlayerIndex].play().catch(() => {
+    document.addEventListener('pointerdown', () => heroVideos[activePlayerIndex].play(), { once: true });
+  });
+}
+
 if (navLinks) {
   const navigationOrder = ['index.html', 'company.html', 'solutions.html', 'technology.html', 'contact.html'];
   const navigationLinks = new Map([...navLinks.querySelectorAll('a')].map((link) => [link.getAttribute('href'), link]));
