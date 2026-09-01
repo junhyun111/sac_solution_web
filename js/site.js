@@ -131,9 +131,6 @@ if (menuButton && navLinks) {
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeMenu();
   });
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > 900) closeMenu();
-  });
 }
 
 const technologyArchitectures = {
@@ -141,7 +138,7 @@ const technologyArchitectures = {
     label: '긴급방송 동작 흐름도',
     steps: [
       ['경보 수신', '유무선 네트워크로 표준 경보 정보 수신'],
-      ['SAC 경보 단말', '수신 정보 확인 및 방송 제어 신호 생성'],
+      ['경보 단말', '수신 정보 확인 및 방송 제어 신호 생성'],
       ['우선방송', '내장 앰프와 우선 스피커로 즉시 안내'],
       ['자동 전환', '기존 전관방송 기동 후 방송 경로 전환'],
       ['상태 모니터링', '앰프 출력과 스피커 회선 이상 감시'],
@@ -718,7 +715,7 @@ const englishTranslations = {
   '긴급방송 동작 흐름도': 'Emergency Broadcast Operation Flow',
   '경보 수신': 'Alert Reception',
   '유무선 네트워크로 표준 경보 정보 수신': 'Receive standard alert information through wired and wireless networks',
-  'SAC 경보 단말': 'SAC Alert Terminal',
+  '경보 단말': 'Alert Terminal',
   '수신 정보 확인 및 방송 제어 신호 생성': 'Verify received information and generate broadcast control signals',
   '우선방송': 'Priority Broadcasting',
   '내장 앰프와 우선 스피커로 즉시 안내': 'Deliver immediate guidance through built-in amplifiers and priority speakers',
