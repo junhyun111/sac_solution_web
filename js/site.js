@@ -66,6 +66,7 @@ if (navLinks) {
     link.replaceWith(dropdown);
     dropdown.append(link, submenu);
   });
+
 }
 
 const solutionDescriptions = {
@@ -132,6 +133,26 @@ if (menuButton && navLinks) {
     if (event.key === 'Escape') closeMenu();
   });
 }
+
+const navigateWithPageTransition = (event) => {
+  const link = event.target.closest('.site-header a[href]');
+  if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  if (link.target && link.target !== '_self') return;
+
+  const destination = new URL(link.href, window.location.href);
+  const current = new URL(window.location.href);
+  const isPageChange = destination.origin === current.origin
+    && (destination.pathname !== current.pathname || destination.search !== current.search);
+  if (!isPageChange) return;
+
+  event.preventDefault();
+  document.body.classList.add('page-transitioning');
+  window.setTimeout(() => {
+    window.location.assign(destination.href);
+  }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 240);
+};
+
+document.addEventListener('click', navigateWithPageTransition);
 
 const technologyArchitectures = {
   emergency: {
