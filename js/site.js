@@ -82,6 +82,23 @@ if (navLinks) {
     dropdown.append(link, submenu);
   });
 
+  navLinks.querySelectorAll('.nav-dropdown > a').forEach((link) => {
+    link.setAttribute('aria-expanded', 'false');
+    link.addEventListener('click', (event) => {
+      if (!window.matchMedia('(max-width: 1024px)').matches || !navLinks.classList.contains('open')) return;
+      event.preventDefault();
+      link.blur();
+      const dropdown = link.closest('.nav-dropdown');
+      navLinks.querySelectorAll('.nav-dropdown.is-open').forEach((openDropdown) => {
+        if (openDropdown === dropdown) return;
+        openDropdown.classList.remove('is-open');
+        openDropdown.querySelector(':scope > a')?.setAttribute('aria-expanded', 'false');
+      });
+      const isOpen = dropdown?.classList.toggle('is-open') ?? false;
+      link.setAttribute('aria-expanded', String(isOpen));
+    });
+  });
+
 }
 
 const solutionDescriptions = {
@@ -112,7 +129,11 @@ if (siteFooter) {
         </div>
         <div>
           <h3>핵심 분야</h3>
-          <div class="footer-links"><a href="solutions.html?tab=safety">재난·안전</a><a href="solutions.html?tab=broadcast">방송·문화</a><a href="solutions.html?tab=smart">스마트 통신</a></div>
+          <div class="footer-links">
+          <a href="solutions.html?tab=safety">재난·안전</a>
+          <a href="solutions.html?tab=broadcast">방송·문화</a>
+          <a href="solutions.html?tab=integration">시스템 통합</a>
+          <a href="solutions.html?tab=smart">스마트 통신</a></div>
         </div>
         <div>
           <h3>문의</h3>
@@ -129,6 +150,10 @@ const closeMenu = () => {
   menuButton.setAttribute('aria-expanded', 'false');
   menuButton.setAttribute('aria-label', '메뉴 열기');
   navLinks.classList.remove('open');
+  navLinks.querySelectorAll('.nav-dropdown').forEach((dropdown) => {
+    dropdown.classList.remove('is-open');
+    dropdown.querySelector(':scope > a')?.setAttribute('aria-expanded', 'false');
+  });
   document.body.classList.remove('menu-open');
   siteHeader?.classList.remove('header-hidden');
 };
@@ -136,6 +161,10 @@ const closeMenu = () => {
 if (menuButton && navLinks) {
   menuButton.addEventListener('click', () => {
     const willOpen = menuButton.getAttribute('aria-expanded') !== 'true';
+    if (!willOpen) {
+      closeMenu();
+      return;
+    }
     menuButton.setAttribute('aria-expanded', String(willOpen));
     menuButton.setAttribute('aria-label', willOpen ? '메뉴 닫기' : '메뉴 열기');
     navLinks.classList.toggle('open', willOpen);
@@ -143,7 +172,9 @@ if (menuButton && navLinks) {
     if (willOpen) siteHeader?.classList.remove('header-hidden');
   });
 
-  navLinks.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+  navLinks.querySelectorAll('a').forEach((link) => link.addEventListener('click', (event) => {
+    if (!event.defaultPrevented) closeMenu();
+  }));
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeMenu();
   });
@@ -429,6 +460,53 @@ document.querySelectorAll('[data-year]').forEach((element) => {
 const solutionTabs = document.querySelectorAll('[data-solution-tab]');
 const solutionPanels = document.querySelectorAll('[data-solution-panel]');
 const scrollToPageTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+const createTabAccordion = (nav, tabs, label, id) => {
+  if (!nav || !tabs.length) return null;
+  const trigger = document.createElement('button');
+  const rootLabel = document.createElement('span');
+  const separator = document.createElement('span');
+  const currentLabel = document.createElement('span');
+  const arrow = document.createElement('span');
+  const options = document.createElement('div');
+
+  nav.classList.add('tab-accordion');
+  trigger.type = 'button';
+  trigger.className = 'tab-accordion-trigger';
+  trigger.setAttribute('aria-expanded', 'false');
+  trigger.setAttribute('aria-controls', `${id}-options`);
+  rootLabel.className = 'tab-accordion-root';
+  rootLabel.textContent = label;
+  separator.className = 'tab-accordion-separator';
+  separator.textContent = '›';
+  currentLabel.className = 'tab-accordion-current';
+  arrow.className = 'tab-accordion-arrow';
+  options.id = `${id}-options`;
+  options.className = 'tab-accordion-options';
+
+  trigger.append(rootLabel, separator, currentLabel, arrow);
+  nav.prepend(trigger);
+  nav.append(options);
+  tabs.forEach((tab) => options.append(tab));
+
+  const sync = () => {
+    const selected = [...tabs].find((tab) => tab.getAttribute('aria-selected') === 'true') || tabs[0];
+    currentLabel.textContent = selected?.textContent.trim() || '';
+    trigger.setAttribute('aria-label', `${label}: ${currentLabel.textContent}`);
+  };
+
+  trigger.addEventListener('click', () => {
+    const isOpen = nav.classList.toggle('is-open');
+    trigger.setAttribute('aria-expanded', String(isOpen));
+  });
+  tabs.forEach((tab) => tab.addEventListener('click', () => {
+    sync();
+    nav.classList.remove('is-open');
+    trigger.setAttribute('aria-expanded', 'false');
+  }));
+  sync();
+  return { sync };
+};
+
 if (solutionTabs.length && solutionPanels.length) {
   const selectSolutionTab = (solution) => {
     solutionTabs.forEach((tab) => {
@@ -465,6 +543,7 @@ if (solutionTabs.length && solutionPanels.length) {
       scrollToPageTop();
     });
   });
+  createTabAccordion(document.querySelector('.solutions-page .solution-filter'), solutionTabs, 'SOLUTIONS', 'solutions-tabs');
 }
 
 const technologyTabs = document.querySelectorAll('[data-technology-tab]');
@@ -507,6 +586,7 @@ if (technologyTabs.length && technologyPanels.length) {
       scrollToPageTop();
     });
   });
+  createTabAccordion(document.querySelector('.technology-page .tech-tabs'), technologyTabs, 'TECHNOLOGY', 'technology-tabs');
 }
 
 const contactForm = document.querySelector('[data-contact-form]');
@@ -965,6 +1045,62 @@ if (languageNavigation) {
     }
   });
   languageNavigation.append(switcher);
+
+  // Render the same compact dropdown on every breakpoint. The legacy buttons
+  // above are cleared so existing language navigation behavior is preserved
+  // while the visual treatment stays consistent across desktop and mobile.
+  switcher.replaceChildren();
+  const currentButton = document.createElement('button');
+  currentButton.type = 'button';
+  currentButton.className = 'language-current';
+  currentButton.setAttribute('aria-haspopup', 'listbox');
+  currentButton.setAttribute('aria-expanded', 'false');
+
+  const currentLabel = document.createElement('span');
+  currentLabel.className = 'language-current-label';
+  currentLabel.textContent = currentLanguage.toUpperCase();
+  const currentArrow = document.createElement('span');
+  currentArrow.className = 'language-arrow';
+  currentArrow.setAttribute('aria-hidden', 'true');
+  currentButton.append(currentLabel, currentArrow);
+
+  const options = document.createElement('div');
+  options.className = 'language-options';
+  options.setAttribute('role', 'listbox');
+  options.setAttribute('aria-label', 'Choose language');
+
+  ['ko', 'en'].forEach((language) => {
+    const option = document.createElement('button');
+    option.type = 'button';
+    option.className = 'language-option';
+    option.textContent = language.toUpperCase();
+    option.setAttribute('role', 'option');
+    option.setAttribute('aria-selected', String(currentLanguage === language));
+    option.setAttribute('aria-pressed', String(currentLanguage === language));
+    option.addEventListener('click', () => {
+      if (language === currentLanguage) {
+        switcher.classList.remove('is-open');
+        currentButton.setAttribute('aria-expanded', 'false');
+        return;
+      }
+      const nextUrl = new URL(window.location.href);
+      if (language === 'en') nextUrl.searchParams.set('lang', 'en');
+      else nextUrl.searchParams.delete('lang');
+      window.location.href = nextUrl.toString();
+    });
+    options.append(option);
+  });
+
+  currentButton.addEventListener('click', () => {
+    const isOpen = switcher.classList.toggle('is-open');
+    currentButton.setAttribute('aria-expanded', String(isOpen));
+  });
+  document.addEventListener('click', (event) => {
+    if (switcher.contains(event.target)) return;
+    switcher.classList.remove('is-open');
+    currentButton.setAttribute('aria-expanded', 'false');
+  });
+  switcher.append(currentButton, options);
 }
 
 if (currentLanguage === 'en') {
