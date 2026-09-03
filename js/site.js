@@ -3,6 +3,7 @@ const navLinks = document.querySelector('.nav-links');
 const siteHeader = document.querySelector('.site-header');
 const languageQuery = new URLSearchParams(window.location.search).get('lang');
 const currentLanguage = languageQuery === 'en' ? 'en' : 'ko';
+const heroVideo = document.querySelector('.hero-video__item');
 const urlWithLanguage = (href) => {
   const nextUrl = new URL(href, window.location.href);
   if (nextUrl.origin !== window.location.origin) return href;
@@ -10,6 +11,20 @@ const urlWithLanguage = (href) => {
   else nextUrl.searchParams.delete('lang');
   return `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`;
 };
+
+if (heroVideo) {
+  heroVideo.addEventListener('ended', () => {
+    heroVideo.classList.remove('is-active');
+    heroVideo.classList.add('is-restarting');
+
+    window.setTimeout(() => {
+      heroVideo.currentTime = 0;
+      heroVideo.classList.remove('is-restarting');
+      heroVideo.classList.add('is-active');
+      heroVideo.play().catch(() => {});
+    }, 1500);
+  });
+}
 
 if (navLinks) {
   const navigationOrder = ['index.html', 'company.html', 'solutions.html', 'technology.html', 'contact.html'];
