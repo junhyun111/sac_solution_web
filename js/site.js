@@ -27,61 +27,6 @@ if (heroVideo) {
 }
 
 if (navLinks) {
-  const navigationOrder = ['index.html', 'company.html', 'solutions.html', 'technology.html', 'contact.html'];
-  const navigationLinks = new Map([...navLinks.querySelectorAll('a')].map((link) => [link.getAttribute('href'), link]));
-  if (!navigationLinks.has('technology.html')) {
-    const technologyLink = document.createElement('a');
-    technologyLink.href = 'technology.html';
-    technologyLink.textContent = 'TECHNOLOGY';
-    navigationLinks.set('technology.html', technologyLink);
-  }
-  navigationOrder.forEach((href) => {
-    const link = navigationLinks.get(href);
-    if (link) navLinks.append(link);
-  });
-
-  const navigationSubmenus = {
-    'company.html': [
-      ['회사소개', 'company.html#about'],
-      ['기술·인증', 'company.html#technology'],
-      ['연혁', 'company.html#history'],
-      ['CI', 'company.html#ci'],
-      ['오시는 길', 'company.html#location'],
-    ],
-    'solutions.html': [
-      ['재난·안전', 'solutions.html?tab=safety'],
-      ['방송·문화', 'solutions.html?tab=broadcast'],
-      ['시스템 통합', 'solutions.html?tab=integration'],
-      ['스마트 통신·ICT', 'solutions.html?tab=smart'],
-    ],
-    'technology.html': [
-      ['Emergency Communication', 'technology.html?tab=emergency'],
-      ['Resilient Broadcast', 'technology.html?tab=resilient'],
-      ['Integrated Infrastructure', 'technology.html?tab=infrastructure'],
-      ['On-device AI', 'technology.html?tab=ondevice'],
-      ['Intelligent Safety', 'technology.html?tab=safety'],
-      ['ITS', 'technology.html?tab=its'],
-    ],
-  };
-
-  Object.entries(navigationSubmenus).forEach(([href, items]) => {
-    const link = [...navLinks.children].find((element) => element.matches(`a[href="${href}"]`));
-    if (!link) return;
-    const dropdown = document.createElement('div');
-    dropdown.className = 'nav-dropdown';
-    const submenu = document.createElement('div');
-    submenu.className = 'nav-submenu';
-    submenu.setAttribute('aria-label', `${link.textContent} 세부 메뉴`);
-    items.forEach(([label, destination]) => {
-      const item = document.createElement('a');
-      item.href = destination;
-      item.textContent = label;
-      submenu.append(item);
-    });
-    link.replaceWith(dropdown);
-    dropdown.append(link, submenu);
-  });
-
   navLinks.querySelectorAll('.nav-dropdown > a').forEach((link) => {
     link.setAttribute('aria-expanded', 'false');
     link.addEventListener('click', (event) => {
@@ -112,38 +57,6 @@ Object.entries(solutionDescriptions).forEach(([solution, description]) => {
   const summary = document.querySelector(`[data-solution-panel="${solution}"] .detail-hero p`);
   if (summary) summary.textContent = description;
 });
-
-const siteFooter = document.querySelector('.footer');
-if (siteFooter) {
-  siteFooter.innerHTML = `
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <img class="footer-logo" src="images/saclogo.svg" alt="SAC Solution" width="110" height="62">
-          <p>경기도 남양주시 순화궁로 272 동광비즈타워 11층 1112호</p>
-          <p>031-570-2792 · sacsound@naver.com · FAX 070-7966-2795</p>
-        </div>
-        <div>
-          <h3>바로가기</h3>
-          <div class="footer-links"><a href="solutions.html">솔루션</a><a href="company.html">회사소개</a><a href="company.html#history">연혁</a></div>
-        </div>
-        <div>
-          <h3>핵심 분야</h3>
-          <div class="footer-links">
-          <a href="solutions.html?tab=safety">재난·안전</a>
-          <a href="solutions.html?tab=broadcast">방송·문화</a>
-          <a href="solutions.html?tab=integration">시스템 통합</a>
-          <a href="solutions.html?tab=smart">스마트 통신</a></div>
-        </div>
-        <div>
-          <h3>문의</h3>
-          <div class="footer-links"><a href="contact.html">프로젝트 문의</a><a href="tel:0315702792">031-570-2792</a><a href="mailto:sacsound@naver.com">이메일 보내기</a></div>
-        </div>
-      </div>
-      <div class="copyright">© <span data-year></span> SAC Solution Corporation. All rights reserved.</div>
-    </div>
-  `;
-}
 
 const closeMenu = () => {
   if (!menuButton || !navLinks) return;
@@ -592,66 +505,11 @@ if (technologyTabs.length && technologyPanels.length) {
 const contactForm = document.querySelector('[data-contact-form]');
 if (contactForm) {
   const solutionSelect = contactForm.elements.solution;
-  const solutionMap = {
-    safety: '재난·안전 솔루션',
-    broadcast: '방송·문화 설비',
-    integration: '시스템 통합',
-    smart: '스마트 통신·ICT'
-  };
+  const solutionIndices = { safety: 1, broadcast: 2, integration: 3, smart: 4 };
   const requestedSolution = new URLSearchParams(window.location.search).get('solution');
-  if (requestedSolution && solutionMap[requestedSolution]) {
-    solutionSelect.value = solutionMap[requestedSolution];
+  if (requestedSolution && solutionIndices[requestedSolution]) {
+    solutionSelect.selectedIndex = solutionIndices[requestedSolution];
   }
-
-  contactForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    if (!contactForm.checkValidity()) {
-      contactForm.reportValidity();
-      return;
-    }
-
-    const data = new FormData(contactForm);
-    const value = (name) => String(data.get(name) || '').trim();
-    const isEnglish = document.documentElement.lang === 'en';
-    const subject = isEnglish
-      ? `[SAC Solution Project Inquiry] ${value('organization')} · ${value('solution')}`
-      : `[홈페이지 프로젝트 문의] ${value('organization')} · ${value('solution')}`;
-    const body = isEnglish
-      ? [
-        'SAC Solution Project Inquiry',
-        '',
-        `Company / Organization: ${value('organization')}`,
-        `Contact Name: ${value('contact_name')}`,
-        `Phone Number: ${value('phone')}`,
-        `Email: ${value('email')}`,
-        `Solution of Interest: ${value('solution')}`,
-        `Project Location: ${value('region') || 'Not provided'}`,
-        `Budget Range: ${value('budget') || 'Not selected'}`,
-        '',
-        'Inquiry Details:',
-        value('message')
-      ].join('\n')
-      : [
-        '에스에이씨솔루션 프로젝트 문의',
-        '',
-        `회사·기관명: ${value('organization')}`,
-        `담당자명: ${value('contact_name')}`,
-        `전화번호: ${value('phone')}`,
-        `이메일: ${value('email')}`,
-        `관심 솔루션: ${value('solution')}`,
-        `프로젝트 지역: ${value('region') || '미입력'}`,
-        `예산 범위: ${value('budget') || '미선택'}`,
-        '',
-        '문의 내용:',
-        value('message')
-      ].join('\n');
-
-    const status = contactForm.querySelector('[data-form-status]');
-    if (status) status.textContent = isEnglish
-      ? 'Opening your email draft. Please press Send to complete your inquiry.'
-      : '이메일 작성 화면을 여는 중입니다. 전송 버튼을 눌러 문의를 완료해 주세요.';
-    window.location.href = `mailto:sacsound@naver.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  });
 }
 
 // Site language switcher
